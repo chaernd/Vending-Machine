@@ -18,5 +18,19 @@ public class Snack {
         this.description = description;
     }
 
+    public String getItemNumber() {
+        return itemNumber;
+    }
 
+    public String getSnackName() {
+        return snackName;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

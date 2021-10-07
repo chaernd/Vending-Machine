@@ -5,6 +5,7 @@ import com.techelevator.view.Menu;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -12,7 +13,8 @@ public class VendingMachine {
 
     /** Instance variables **/
     private int idNumber;
-    private Map<Snack,Integer> inventory = new HashMap<>();
+    private Map<Snack,Integer> inventory = new LinkedHashMap<>();
+    private int[] options;
 
     /* when a vending machine is created
     it takes in a Menu object as a parameter
@@ -50,7 +52,25 @@ public class VendingMachine {
                     - give that snack a foodType description (candy, chip, drink, gum)
                     - Give each snack its key
          */
-
     }
 
+    public int getidNumber() {
+        return idNumber;
+    }
+
+    public Map<Snack, Integer> getInventory() {
+        return inventory;
+    }
+
+    public void setIdNumber(int idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public void setInventory(Map<Snack, Integer> inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setOptions(int[] options) {
+        this.options = options;
+    }
 }

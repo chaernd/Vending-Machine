@@ -1,5 +1,7 @@
 package com.techelevator.view;
 
+import com.techelevator.VendingMachine;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -24,7 +26,8 @@ public class Menu {
 		return choice;
 	}
 
-	private Object getChoiceFromUserInput(Object[] options) {
+
+	private Object getChoiceFromUserInput(Object[] options) {     //User Input
 		Object choice = null;
 		String userInput = in.nextLine();
 		try {
@@ -41,7 +44,10 @@ public class Menu {
 		return choice;
 	}
 
-	private void displayMenuOptions(Object[] options) {
+
+
+
+	private void displayMenuOptions(Object[] options) { //Adding menu options
 		out.println();
 		for (int i = 0; i < options.length; i++) {
 			int optionNum = i + 1;
