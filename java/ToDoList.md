@@ -1,4 +1,4 @@
-![](../../../Desktop/VendingHierarchy.png)    
+![](VendingHierarchy.png)
 
 <H1>Purchase Menu</H1>
 <u><h3>1. FEED MONEY</h3></u>                                                          
