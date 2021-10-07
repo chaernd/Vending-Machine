@@ -1,0 +1,21 @@
+// Vending machine class
+- id Number
+- Static ... purchase must keep an audit file that tracks all purchases (date, time, item sold, vendingmachinenumber)
+- inventory Map
+
+// Food item class
+- Maybe has an instance variable that holds the numeric value
+- Name
+- Price
+
+// Person class
+- have a bank account number
+- doesn't need an account balance (we could do this thought if we want to add extra things)
+
+
+
+// customer interface
+- unnecessary
+
+// sellable interface
+--
