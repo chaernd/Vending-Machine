@@ -19,3 +19,15 @@
 
 // sellable interface
 --
+
+Done
+1. Created Vending Machine Object
+2. Created functioning sub purchase menu
+3. Created dollar input machine
+
+
+To Do
+1. Figure out how to update big decimal value
+2. Select a product
+3. Finish transaction
+4. update a transaction file.

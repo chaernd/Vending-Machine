@@ -2,6 +2,7 @@ package com.techelevator;
 
 import com.techelevator.view.Menu;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +15,12 @@ public class VendingMachineCLI {
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE };
+	private static final String PURCHASE_MENU_FEED_MONEY = "Feed money";
+	private static final String PURCHASE_MENU_SELECT_PRODUCT = "Select product";
+	private static final String PURCHASE_MENU_FINISH_TRANSACTION = "Finish transaction";
+	private static final String[] PURCHASE_MENU_OPTIONS = {PURCHASE_MENU_FEED_MONEY, PURCHASE_MENU_SELECT_PRODUCT, PURCHASE_MENU_FINISH_TRANSACTION};
 	private Menu menu;
+	private Scanner scanner = new Scanner(System.in);
 
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
@@ -23,8 +29,11 @@ public class VendingMachineCLI {
 	public void run() {
 		VendingMachine vendingMachine = new VendingMachine(1);
 		Map <Snack, Integer> inventoryCopy = new LinkedHashMap<Snack, Integer>(vendingMachine.getInventory());
+		/** Displays main menu, prompts for selection **/
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
+
+			/** if the choice is 1, display all the vending machine purchase options **/
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				System.out.println(vendingMachine.getidNumber());
 
@@ -34,79 +43,48 @@ public class VendingMachineCLI {
 					System.out.println(key.getItemNumber() + " " + key.getSnackName() + " " + key.getPrice() + " " + inventory);
 				}
 
+			/** if the choice is 2, display a new purchase menu, and prompt again for input **/
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				// do purchase
-				System.out.println("What would you like to purchase?: >>");
 
-				Scanner scanner = new Scanner(System.in);
-				String userInput = scanner.nextLine();
+				choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // brings up sub-purchase menu, calls other methods that return Choice as 1 - 3
+				while (true) {
+				if (choice.equals(PURCHASE_MENU_FEED_MONEY)) { // Choice one, prompt for feed money
+						System.out.println("Enter money");
 
-			for (Map.Entry<Snack, Integer> item : vendingMachine.getInventory().entrySet()) {
-					Snack key = item.getKey();
-					Integer newInv = item.getValue();
-					switch (userInput) {
-								case "A1":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									//update the value, decremented by one.
-									//do this each time a specific item is purchased
-									//
+						String userInput = scanner.nextLine();
+						try {
+							int dollar = Integer.parseInt(userInput);
+						} catch (Exception e) {
+							System.out.println("You have not entered a valid whole number");
+						}
+						BigDecimal dollarEntered = new BigDecimal(userInput);
+						vendingMachine.setMachineBalance(dollarEntered);
+						// need to find a way to get out of the loop without going to FIRST while loop
+						choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+					}
 
-									break;
-								case "A2":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "A3":
 
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "A4":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "B1":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "B2":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "B3":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "B4":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "C1":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "C2":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "C3":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "C4":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "D1":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "D2":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-									break;
-								case "D3":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
-								case "D4":
-									updateValue(vendingMachine, inventoryCopy, key, newInv);
+					else if (choice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice 2, prompt to pick an item
+
+						String userInput = scanner.nextLine();
+
+						for (Map.Entry<Snack, Integer> item : vendingMachine.getInventory().entrySet()) {
+							Snack key = item.getKey();
+							Integer newInv = item.getValue();
+							if (userInput.matches("[A-D]" + "[1-4]")) {
+								updateValue(vendingMachine, inventoryCopy, key, newInv);
 							}
-							break;
-					//try {
-					//	int selectedOption = Integer.valueOf(userInput);
-					//	if (selectedOption > 0 && selectedOption <= options.length) {
-					//		choice = options[selectedOption - 1];
-					//	}
+						}
+
+					} else if (choice.equals(PURCHASE_MENU_FINISH_TRANSACTION)) { // complete the transaction
+						// make change (reset machine balance to 0, system.out.println the amount of change being given back)
+						// update transaction file
+					}
 				}
 			}
 		}
 	}
+
 
 	private void updateValue(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, Snack key, Integer newInv) {
 		newInv--;
@@ -119,7 +97,5 @@ public class VendingMachineCLI {
 		Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
 		cli.run();
-		VendingMachine myMachine = new VendingMachine(5);
-
 	}
 }

@@ -15,6 +15,7 @@ public class VendingMachine {
     private int idNumber;
     private Map<Snack,Integer> inventory = new LinkedHashMap<>();
     private int[] options;
+    private BigDecimal machineBalance;
 
     /* when a vending machine is created
     it takes in a Menu object as a parameter
@@ -23,6 +24,7 @@ public class VendingMachine {
     /** Constructor **/
     public VendingMachine(int idNumber) {
         this.idNumber = idNumber;
+        this.machineBalance = new BigDecimal("0");
         createInventoryMap();
 
     }
@@ -72,5 +74,13 @@ public class VendingMachine {
 
     public void setOptions(int[] options) {
         this.options = options;
+    }
+
+    public BigDecimal getMachineBalance() {
+        return machineBalance;
+    }
+
+    public void setMachineBalance(BigDecimal dollars) {
+        machineBalance.add(dollars); // todo : THIS DOESN'T WORK
     }
 }
