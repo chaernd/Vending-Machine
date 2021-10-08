@@ -4,10 +4,7 @@ import com.techelevator.view.Menu;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class VendingMachine {
 
@@ -16,6 +13,8 @@ public class VendingMachine {
     private Map<Snack,Integer> inventory = new LinkedHashMap<>();
     private int[] options;
     private BigDecimal machineBalance;
+    private Scanner scanner = new Scanner(System.in);
+
 
     /* when a vending machine is created
     it takes in a Menu object as a parameter
@@ -28,7 +27,7 @@ public class VendingMachine {
         createInventoryMap();
 
     }
-
+                                                        //Map<String, Snack> countMap =
     // method that Populates the inventory
     public void createInventoryMap() {
         File menuFile = new File("vendingmachine.csv");
@@ -42,7 +41,7 @@ public class VendingMachine {
             }
 
         } catch (Exception e) {
-            System.out.println("Error!");
+            System.out.println(Arrays.toString(e.getStackTrace()));
         }
             /*
             -read the provided menu file
@@ -80,7 +79,53 @@ public class VendingMachine {
         return machineBalance;
     }
 
-    public void setMachineBalance(BigDecimal dollars) {
-        machineBalance.add(dollars); // todo : THIS DOESN'T WORK
+    public void increaseMachineBalance(BigDecimal dollars) {
+        machineBalance = machineBalance.add(dollars); // todo : THIS DOESN'T WORK
+    }
+
+    public void substractMachineBalance(Snack key) {
+        machineBalance = machineBalance.subtract(key.getPrice());
+    }
+
+    public String selectProduct(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, String choice, Menu menu, String[] PURCHASE_MENU_OPTIONS) {
+
+        String userInput = scanner.nextLine();
+
+        for (Map.Entry<Snack, Integer> item : getInventory().entrySet()) {
+            Snack key = item.getKey();
+            Integer newInv = item.getValue();
+            if (userInput.matches("[A-D]" + "[1-4]")) {
+                updateValue(vendingMachine, inventoryCopy, key, newInv);
+                substractMachineBalance(key);
+                System.out.println(getMachineBalance());
+                break;
+            } else {
+                System.out.println("Invalid option");
+                return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+            }
+        } return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+
+
+    }
+
+    /*
+    public void updateValue(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, Snack key, Integer newInv) {
+        newInv--;
+        System.out.println(newInv);
+        inventoryCopy.put(key, newInv);
+        vendingMachine.setInventory(inventoryCopy);
+    }
+*/
+
+    public String purchaseItem(String slot) {
+        //lookup snack based on slot using the inventory map (instance variable)
+        //lookup current value of how many there are (inventory count)
+        //if (inventoryCount < 1) {return "Sold Out"}
+        //if (not enough money) {return "Give more money"}
+        //else {inventoryCount--, update map, update machineBalance, return snack-specific noise}
+    }
+
+    public boolean isValidSlot(String userInput) {
+        return inventory.containsKey(userInput);
     }
 }

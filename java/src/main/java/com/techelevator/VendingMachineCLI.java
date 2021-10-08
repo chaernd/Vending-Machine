@@ -28,7 +28,7 @@ public class VendingMachineCLI {
 
 	public void run() {
 		VendingMachine vendingMachine = new VendingMachine(1);
-		Map <Snack, Integer> inventoryCopy = new LinkedHashMap<Snack, Integer>(vendingMachine.getInventory());
+		Map<Snack, Integer> inventoryCopy = new LinkedHashMap<Snack, Integer>(vendingMachine.getInventory());
 		/** Displays main menu, prompts for selection **/
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
@@ -43,12 +43,12 @@ public class VendingMachineCLI {
 					System.out.println(key.getItemNumber() + " " + key.getSnackName() + " " + key.getPrice() + " " + inventory);
 				}
 
-			/** if the choice is 2, display a new purchase menu, and prompt again for input **/
+				/** if the choice is 2, display a new purchase menu, and prompt again for input **/
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 
-				choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // brings up sub-purchase menu, calls other methods that return Choice as 1 - 3
 				while (true) {
-				if (choice.equals(PURCHASE_MENU_FEED_MONEY)) { // Choice one, prompt for feed money
+					String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // brings up sub-purchase menu, calls other methods that return Choice as 1 - 3
+					if (purchaseChoice.equals(PURCHASE_MENU_FEED_MONEY)) { // Choice one, prompt for feed money
 						System.out.println("Enter money");
 
 						String userInput = scanner.nextLine();
@@ -58,41 +58,58 @@ public class VendingMachineCLI {
 							System.out.println("You have not entered a valid whole number");
 						}
 						BigDecimal dollarEntered = new BigDecimal(userInput);
-						vendingMachine.setMachineBalance(dollarEntered);
+						vendingMachine.increaseMachineBalance(dollarEntered);
+						System.out.println(vendingMachine.getMachineBalance());
 						// need to find a way to get out of the loop without going to FIRST while loop
-						choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-					}
+					} else if (purchaseChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice 2, prompt to pick an item
+
+						Scanner scanner = new Scanner(System.in);
+						//print("enter item number")
+						vendingMachine.isValidSlot(userInput) {
+							vendingMachine.purchaseItem();
+						} else {
+							//print "invalid selection"
+						}
+
+						vendingMachine.selectProduct(vendingMachine, inventoryCopy, choice, menu, PURCHASE_MENU_OPTIONS);
 
 
-					else if (choice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice 2, prompt to pick an item
 
 						String userInput = scanner.nextLine();
-
-						for (Map.Entry<Snack, Integer> item : vendingMachine.getInventory().entrySet()) {
-							Snack key = item.getKey();
+						boolean isValidSelection = vendingMachine.isValidSlot(userInput);
+						for (Map.Entry<Snack, Integer> item : vendingMachine.getInventory().entrySet()) { //get rid of the for loop
+							Snack key = item.getKey();												     //move updateV
 							Integer newInv = item.getValue();
 							if (userInput.matches("[A-D]" + "[1-4]")) {
 								updateValue(vendingMachine, inventoryCopy, key, newInv);
+							} else {
+								System.out.println("Invalid option");
+								choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 							}
 						}
+
 
 					} else if (choice.equals(PURCHASE_MENU_FINISH_TRANSACTION)) { // complete the transaction
 						// make change (reset machine balance to 0, system.out.println the amount of change being given back)
 						// update transaction file
 					}
+
+					 */
+					}
+//					choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 				}
 			}
 		}
 	}
 
-
+/*
 	private void updateValue(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, Snack key, Integer newInv) {
 		newInv--;
 		System.out.println(newInv);
 		inventoryCopy.put(key, newInv);
 		vendingMachine.setInventory(inventoryCopy);
 	}
-
+*/
 	public static void main(String[] args) {
 		Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
