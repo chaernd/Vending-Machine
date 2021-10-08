@@ -14,7 +14,7 @@ public class VendingMachineCLI {
 
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE };
+	private static final String[] MAIN_MENU_OPTIONS = {MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE};
 	private static final String PURCHASE_MENU_FEED_MONEY = "Feed money";
 	private static final String PURCHASE_MENU_SELECT_PRODUCT = "Select product";
 	private static final String PURCHASE_MENU_FINISH_TRANSACTION = "Finish transaction";
@@ -28,79 +28,65 @@ public class VendingMachineCLI {
 
 	public void run() {
 		VendingMachine vendingMachine = new VendingMachine(1);
-		Map<Snack, Integer> inventoryCopy = new LinkedHashMap<Snack, Integer>(vendingMachine.getInventory());
 		/** Displays main menu, prompts for selection **/
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
 			/** if the choice is 1, display all the vending machine purchase options **/
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-				System.out.println(vendingMachine.getidNumber());
 
-				for (Map.Entry<Snack, Integer> item : vendingMachine.getInventory().entrySet()) {
-					Snack key = item.getKey();
-					Integer inventory = item.getValue();
-					System.out.println(key.getItemNumber() + " " + key.getSnackName() + " " + key.getPrice() + " " + inventory);
+				// todo: create a method in the Vending Machine that returns out a nicely-displaying list of menu items (convert below into a method to call)
+				// todo: System.out.println(call the above method);
+				for (Map.Entry<String, Snack> item : vendingMachine.getInventory().entrySet()) {
+					String key = item.getKey();
+					Snack value = item.getValue();
+					System.out.println(key +  " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory());
 				}
 
 				/** if the choice is 2, display a new purchase menu, and prompt again for input **/
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 
 				while (true) {
-					String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // brings up sub-purchase menu, calls other methods that return Choice as 1 - 3
+					//
+					String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS); // validates user Choice
 					if (purchaseChoice.equals(PURCHASE_MENU_FEED_MONEY)) { // Choice one, prompt for feed money
-						System.out.println("Enter money");
-
+						System.out.print("Enter money ");
 						String userInput = scanner.nextLine();
-						try {
-							int dollar = Integer.parseInt(userInput);
-						} catch (Exception e) {
-							System.out.println("You have not entered a valid whole number");
-						}
-						BigDecimal dollarEntered = new BigDecimal(userInput);
-						vendingMachine.increaseMachineBalance(dollarEntered);
-						System.out.println(vendingMachine.getMachineBalance());
-						// need to find a way to get out of the loop without going to FIRST while loop
-					} else if (purchaseChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice 2, prompt to pick an item
+						if (vendingMachine.isValidDollarEntered(userInput)) { // pass in user input to Vending Machine. If returns true (is valid dollar)
+							BigDecimal dollarEntered = new BigDecimal(userInput); // convert user input to Big Decimal
+							vendingMachine.increaseMachineBalance(dollarEntered); // add money to balance
+							System.out.println("Current balance: " + vendingMachine.getMachineBalance());
+						} // if false, nothing happens. Goes back to submenu.
+//
+					} else if (purchaseChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice two, prompt to pick an item
+						// todo: display products ^^ using the method described above.
 
-						Scanner scanner = new Scanner(System.in);
-						//print("enter item number")
-						vendingMachine.isValidSlot(userInput) {
-							vendingMachine.purchaseItem();
+						System.out.print("Enter a product number: ");
+						String userInput = scanner.nextLine();
+						if (vendingMachine.isValidSlot(userInput)) { // is it a key that exists in the map (and if machineBalance >= item price
+							vendingMachine.purchaseItem(userInput); // if it does exist in the map, make the purchase.
 						} else {
-							//print "invalid selection"
+							System.out.println("That was not a valid selection");//print "invalid selection"
 						}
+						// todo: dispense sound OR print out failure message (e.g. "not enough money", "Item doesn't exist");
 
-						vendingMachine.selectProduct(vendingMachine, inventoryCopy, choice, menu, PURCHASE_MENU_OPTIONS);
+					} else if (choice.equals(PURCHASE_MENU_FINISH_TRANSACTION)) { // Choice 3, complete the transaction
 
+						// todo: system.out.println the amount of change being given back
+						// todo: reset the machine's balance to 0
+						// todo: update log file (haven't created yet)
+						// todo: add a third Static Variable Exit button to the main menu
 
+						// todo: optional sales report
 
-						String userInput = scanner.nextLine();
-						boolean isValidSelection = vendingMachine.isValidSlot(userInput);
-						for (Map.Entry<Snack, Integer> item : vendingMachine.getInventory().entrySet()) { //get rid of the for loop
-							Snack key = item.getKey();												     //move updateV
-							Integer newInv = item.getValue();
-							if (userInput.matches("[A-D]" + "[1-4]")) {
-								updateValue(vendingMachine, inventoryCopy, key, newInv);
-							} else {
-								System.out.println("Invalid option");
-								choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-							}
-						}
-
-
-					} else if (choice.equals(PURCHASE_MENU_FINISH_TRANSACTION)) { // complete the transaction
-						// make change (reset machine balance to 0, system.out.println the amount of change being given back)
-						// update transaction file
 					}
-
-					 */
-					}
-//					choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 				}
 			}
 		}
 	}
+
+
+
 
 /*
 	private void updateValue(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, Snack key, Integer newInv) {

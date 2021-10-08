@@ -10,7 +10,7 @@ public class VendingMachine {
 
     /** Instance variables **/
     private int idNumber;
-    private Map<Snack,Integer> inventory = new LinkedHashMap<>();
+    private Map<String, Snack> inventory = new LinkedHashMap<>();
     private int[] options;
     private BigDecimal machineBalance;
     private Scanner scanner = new Scanner(System.in);
@@ -37,7 +37,7 @@ public class VendingMachine {
                 String line = fileReader.nextLine(); // make a string
                 String[] lineArray = line.split("\\|"); // turn into array
                 BigDecimal price = new BigDecimal(lineArray[2]); // turn priceString into BigDecimal
-                inventory.put(new Snack(lineArray[0],lineArray[1],price, lineArray[3]), 5); // create snack object, and add to Map with inventory number (5)
+                inventory.put(lineArray[0], new Snack(lineArray[1], price, lineArray[3])); // create snack object, and add to Map with inventory number (5)
             }
 
         } catch (Exception e) {
@@ -59,7 +59,7 @@ public class VendingMachine {
         return idNumber;
     }
 
-    public Map<Snack, Integer> getInventory() {
+    public Map<String, Snack> getInventory() {
         return inventory;
     }
 
@@ -67,7 +67,7 @@ public class VendingMachine {
         this.idNumber = idNumber;
     }
 
-    public void setInventory(Map<Snack, Integer> inventory) {
+    public void setInventory(Map<String, Snack> inventory) {
         this.inventory = inventory;
     }
 
@@ -83,30 +83,30 @@ public class VendingMachine {
         machineBalance = machineBalance.add(dollars); // todo : THIS DOESN'T WORK
     }
 
-    public void substractMachineBalance(Snack key) {
-        machineBalance = machineBalance.subtract(key.getPrice());
+    public void subtractMachineBalance(BigDecimal snackPrice) {
+        machineBalance = machineBalance.subtract(snackPrice);
     }
 
-    public String selectProduct(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, String choice, Menu menu, String[] PURCHASE_MENU_OPTIONS) {
-
-        String userInput = scanner.nextLine();
-
-        for (Map.Entry<Snack, Integer> item : getInventory().entrySet()) {
-            Snack key = item.getKey();
-            Integer newInv = item.getValue();
-            if (userInput.matches("[A-D]" + "[1-4]")) {
-                updateValue(vendingMachine, inventoryCopy, key, newInv);
-                substractMachineBalance(key);
-                System.out.println(getMachineBalance());
-                break;
-            } else {
-                System.out.println("Invalid option");
-                return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-            }
-        } return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-
-
-    }
+//    public String selectProduct(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, String choice, Menu menu, String[] PURCHASE_MENU_OPTIONS) {
+//
+//        String userInput = scanner.nextLine();
+//
+//        for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
+//            Snack key = item.getKey();
+//            Integer newInv = item.getValue();
+//            if (userInput.matches("[A-D]" + "[1-4]")) {
+//                updateValue(vendingMachine, inventoryCopy, key, newInv);
+//                subtractMachineBalance(key);
+//                System.out.println(getMachineBalance());
+//                break;
+//            } else {
+//                System.out.println("Invalid option");
+//                return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+//            }
+//        } return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+//
+//
+//    }
 
     /*
     public void updateValue(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, Snack key, Integer newInv) {
@@ -117,15 +117,43 @@ public class VendingMachine {
     }
 */
 
-    public String purchaseItem(String slot) {
-        //lookup snack based on slot using the inventory map (instance variable)
-        //lookup current value of how many there are (inventory count)
-        //if (inventoryCount < 1) {return "Sold Out"}
-        //if (not enough money) {return "Give more money"}
-        //else {inventoryCount--, update map, update machineBalance, return snack-specific noise}
+    public void purchaseItem(String slot) {
+        //slot is a key in the map
+        //we want to get the value at that key (which is a snack)
+        boolean isSuccessfulPurchase = true;
+        Snack selectedSnack = inventory.get(slot); // this is the snack Object they want to buy
+        if (selectedSnack.getInventory() > 0) { // if there is a snack to buy
+            if (machineBalance.compareTo(selectedSnack.getPrice()) >= 0) { // if machine balance is greater than or equal to snackPrice
+                BigDecimal snackPrice = selectedSnack.getPrice(); // turn snack price into a BigDecimal
+                subtractMachineBalance(snackPrice); // makes change
+                selectedSnack.setInventory(selectedSnack.getInventory() - 1); // should subtract one from the inventory.
+            }
+        } else { // if snack inventory is 0
+            System.out.println("Sold out");
+        }
+        dispensingSound(isSuccessfulPurchase);
     }
 
     public boolean isValidSlot(String userInput) {
-        return inventory.containsKey(userInput);
+        return inventory.containsKey(userInput); // will return true if key entered is in the map, false if invalid entry.
     }
+
+    public String dispensingSound(boolean isSuccessfulPurchase) {
+        if (isSuccessfulPurchase) {
+            return "Sound of dispensing an item";
+        }else {
+            return "Sound of failure";
+        }
+    }
+
+    public boolean isValidDollarEntered(String userInput) {
+        try {
+            int dollar = Integer.parseInt(userInput);
+            return true;
+        } catch (Exception e) {
+            System.out.println("You have not entered a valid whole number"); //
+        }
+        return false;
+    }
+
 }
