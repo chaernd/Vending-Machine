@@ -20,24 +20,20 @@ public class VendingMachine {
     private int[] options;
     private BigDecimal machineBalance;
     private Scanner scanner = new Scanner(System.in);
-
-
-    /* when a vending machine is created
-    it takes in a Menu object as a parameter
-     */
+    private final BigDecimal STARTING_BALANCE = new BigDecimal("0");
 
     /**
      * Constructor
      **/
+
     public VendingMachine(int idNumber) {
         this.idNumber = idNumber;
-        this.machineBalance = new BigDecimal("0");
+        this.machineBalance = STARTING_BALANCE;
+//        this.machineBalance = new BigDecimal("0");
         createInventoryMap();
 
     }
 
-    //Map<String, Snack> countMap =
-    // method that Populates the inventory
     public void createInventoryMap() {
         File menuFile = new File("vendingmachine.csv");
 
@@ -79,8 +75,11 @@ public class VendingMachine {
         return machineBalance;
     }
 
-    public void increaseMachineBalance(BigDecimal dollars) {
-        machineBalance = machineBalance.add(dollars); // todo : THIS DOESN'T WORK
+    public void increaseMachineBalance(String userInput) {
+        BigDecimal dollarEntered = new BigDecimal(userInput);
+        machineBalance = machineBalance.add(dollarEntered);
+        writeToTransactionLedger(dollarEntered, "FEED MONEY");
+
     }
 
     public void subtractMachineBalance(BigDecimal snackPrice) {
@@ -141,12 +140,6 @@ public class VendingMachine {
         try (FileWriter appender = new FileWriter(new File("Log.txt"), true)) {
             try (PrintWriter writer = new PrintWriter(appender)) {
 
-                //  01/01/2016 12:00:00 PM FEED MONEY: \$5.00 \$5.00
-                //  08-10-2021 16:43:30 PM
-                // 08/10/2021 16:56:10 PMFEED MONEY: 10 10
-                // purchases
-                // feed money
-                // change given
                 Date date = new Date();
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
                 writer.println(formatter.format(date) + " " + transactionType + ": $" + dollars.setScale(2) + " $" + getMachineBalance().setScale(2));
@@ -157,6 +150,12 @@ public class VendingMachine {
         } catch (Exception e) {
             System.out.print("ERROR WITH YOUR WRITE FILE");
         }
-
     }
+
+    public void makeChange() {
+        BigDecimal balanceBeforeGivingChange = getMachineBalance(); // 10
+        machineBalance = STARTING_BALANCE; // 0
+        writeToTransactionLedger(balanceBeforeGivingChange, "GIVE CHANGE");
+    }
+
 }
