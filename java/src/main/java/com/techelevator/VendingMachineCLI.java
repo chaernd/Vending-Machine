@@ -34,15 +34,16 @@ public class VendingMachineCLI {
 
 			/** if the choice is 1, display all the vending machine purchase options **/
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-
+				vendingMachine.displayItems();
 				// todo: create a method in the Vending Machine that returns out a nicely-displaying list of menu items (convert below into a method to call)
 				// todo: System.out.println(call the above method);
+				/*
 				for (Map.Entry<String, Snack> item : vendingMachine.getInventory().entrySet()) {
 					String key = item.getKey();
 					Snack value = item.getValue();
 					System.out.println(key +  " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory());
 				}
-
+				/*
 				/** if the choice is 2, display a new purchase menu, and prompt again for input **/
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 
@@ -56,15 +57,17 @@ public class VendingMachineCLI {
 							BigDecimal dollarEntered = new BigDecimal(userInput); // convert user input to Big Decimal
 							vendingMachine.increaseMachineBalance(dollarEntered); // add money to balance
 							System.out.println("Current balance: " + vendingMachine.getMachineBalance());
+							vendingMachine.writeToTransactionLedger(dollarEntered, "FEED MONEY");
 						} // if false, nothing happens. Goes back to submenu.
 //
 					} else if (purchaseChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice two, prompt to pick an item
 						// todo: display products ^^ using the method described above.
-
+						vendingMachine.displayItems();
 						System.out.print("Enter a product number: ");
 						String userInput = scanner.nextLine();
 						if (vendingMachine.isValidSlot(userInput)) { // is it a key that exists in the map (and if machineBalance >= item price
-							vendingMachine.purchaseItem(userInput); // if it does exist in the map, make the purchase.
+							System.out.print(vendingMachine.purchaseItem(userInput)); // if it does exist in the map, make the purchase.
+
 						} else {
 							System.out.println("That was not a valid selection");//print "invalid selection"
 						}

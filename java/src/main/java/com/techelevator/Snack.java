@@ -37,6 +37,22 @@ public class Snack {
         this.inventory = inventory;
     }
 
+    public String playSound() {
+        String snackType = getDescription();
+        String snackSound = " ";
+        switch (snackType) {
+            case "Chip":
+                snackSound = "All chip items print Crunch Crunch, Yum!";
 
+            case "Candy":
+                snackSound = "Munch Munch, Yum!";
 
+            case "Drink":
+                snackSound = "Glug Glug, Yum!";
+
+            case "Gum":
+                snackSound = "Chew Chew, Yum!";
+        }
+        return snackSound;
+    }
 }

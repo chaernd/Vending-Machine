@@ -48,7 +48,7 @@ b. machineBalance-= machineBalance
 
 c. Return customer to Main Menu<br><br>
 
-
+d. write transactions to log file
 
 
 <h1>Main Menu</h1>

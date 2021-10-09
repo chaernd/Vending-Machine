@@ -3,12 +3,18 @@ package com.techelevator;
 import com.techelevator.view.Menu;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class VendingMachine {
 
-    /** Instance variables **/
+    /**
+     * Instance variables
+     **/
     private int idNumber;
     private Map<String, Snack> inventory = new LinkedHashMap<>();
     private int[] options;
@@ -20,20 +26,23 @@ public class VendingMachine {
     it takes in a Menu object as a parameter
      */
 
-    /** Constructor **/
+    /**
+     * Constructor
+     **/
     public VendingMachine(int idNumber) {
         this.idNumber = idNumber;
         this.machineBalance = new BigDecimal("0");
         createInventoryMap();
 
     }
-                                                        //Map<String, Snack> countMap =
+
+    //Map<String, Snack> countMap =
     // method that Populates the inventory
     public void createInventoryMap() {
         File menuFile = new File("vendingmachine.csv");
 
         try (Scanner fileReader = new Scanner(menuFile)) {
-            while(fileReader.hasNextLine()) {
+            while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine(); // make a string
                 String[] lineArray = line.split("\\|"); // turn into array
                 BigDecimal price = new BigDecimal(lineArray[2]); // turn priceString into BigDecimal
@@ -43,16 +52,7 @@ public class VendingMachine {
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
-            /*
-            -read the provided menu file
-            -while has next line
-                - Turn every line into a string
-                - Split string into an array
-                - create a snack object and add to inventory Map
-                    - give that snack a price
-                    - give that snack a foodType description (candy, chip, drink, gum)
-                    - Give each snack its key
-         */
+
     }
 
     public int getidNumber() {
@@ -87,63 +87,36 @@ public class VendingMachine {
         machineBalance = machineBalance.subtract(snackPrice);
     }
 
-//    public String selectProduct(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, String choice, Menu menu, String[] PURCHASE_MENU_OPTIONS) {
-//
-//        String userInput = scanner.nextLine();
-//
-//        for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
-//            Snack key = item.getKey();
-//            Integer newInv = item.getValue();
-//            if (userInput.matches("[A-D]" + "[1-4]")) {
-//                updateValue(vendingMachine, inventoryCopy, key, newInv);
-//                subtractMachineBalance(key);
-//                System.out.println(getMachineBalance());
-//                break;
-//            } else {
-//                System.out.println("Invalid option");
-//                return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-//            }
-//        } return choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-//
-//
-//    }
 
-    /*
-    public void updateValue(VendingMachine vendingMachine, Map<Snack, Integer> inventoryCopy, Snack key, Integer newInv) {
-        newInv--;
-        System.out.println(newInv);
-        inventoryCopy.put(key, newInv);
-        vendingMachine.setInventory(inventoryCopy);
-    }
-*/
-
-    public void purchaseItem(String slot) {
+    public String purchaseItem(String slot) {
         //slot is a key in the map
         //we want to get the value at that key (which is a snack)
-        boolean isSuccessfulPurchase = true;
         Snack selectedSnack = inventory.get(slot); // this is the snack Object they want to buy
         if (selectedSnack.getInventory() > 0) { // if there is a snack to buy
             if (machineBalance.compareTo(selectedSnack.getPrice()) >= 0) { // if machine balance is greater than or equal to snackPrice
                 BigDecimal snackPrice = selectedSnack.getPrice(); // turn snack price into a BigDecimal
                 subtractMachineBalance(snackPrice); // makes change
                 selectedSnack.setInventory(selectedSnack.getInventory() - 1); // should subtract one from the inventory.
+                writeToTransactionLedger(getMachineBalance().add(snackPrice), "PURCHASE");
+                return "Here's your snack, OK?" + " " +
+                        selectedSnack.getSnackName() +
+                        "\n" +
+                        "Snack Price: " + selectedSnack.getPrice() +
+                        "\n" +
+                        "Remaining Balance: " +getMachineBalance() +
+                        "\n" +
+                        selectedSnack.playSound();
+
+            } else {
+                return "You need to add more money";
             }
-        } else { // if snack inventory is 0
-            System.out.println("Sold out");
         }
-        dispensingSound(isSuccessfulPurchase);
+        return "Sold Out";
     }
+
 
     public boolean isValidSlot(String userInput) {
         return inventory.containsKey(userInput); // will return true if key entered is in the map, false if invalid entry.
-    }
-
-    public String dispensingSound(boolean isSuccessfulPurchase) {
-        if (isSuccessfulPurchase) {
-            return "Sound of dispensing an item";
-        }else {
-            return "Sound of failure";
-        }
     }
 
     public boolean isValidDollarEntered(String userInput) {
@@ -156,4 +129,34 @@ public class VendingMachine {
         return false;
     }
 
+    public void displayItems() {
+        for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
+            String key = item.getKey();
+            Snack value = item.getValue();
+            System.out.println(key + " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory());
+        }
+    }
+
+    public void writeToTransactionLedger(BigDecimal dollars, String transactionType) {
+        try (FileWriter appender = new FileWriter(new File("Log.txt"), true)) {
+            try (PrintWriter writer = new PrintWriter(appender)) {
+
+                //  01/01/2016 12:00:00 PM FEED MONEY: \$5.00 \$5.00
+                //  08-10-2021 16:43:30 PM
+                // 08/10/2021 16:56:10 PMFEED MONEY: 10 10
+                // purchases
+                // feed money
+                // change given
+                Date date = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa");
+                writer.println(formatter.format(date) + " " + transactionType + ": $" + dollars.setScale(2) + " $" + getMachineBalance().setScale(2));
+
+            } catch (Exception e) {
+                System.out.print("There's a big with the write file");
+            }
+        } catch (Exception e) {
+            System.out.print("ERROR WITH YOUR WRITE FILE");
+        }
+
+    }
 }
