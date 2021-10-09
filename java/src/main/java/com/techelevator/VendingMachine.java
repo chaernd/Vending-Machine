@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.math.*;
 
 public class VendingMachine {
 
@@ -41,14 +42,12 @@ public class VendingMachine {
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine(); // make a string
                 String[] lineArray = line.split("\\|"); // turn into array
-                BigDecimal price = new BigDecimal(lineArray[2]); // turn priceString into BigDecimal
+                BigDecimal price = (new BigDecimal(lineArray[2])).abs(); // turn priceString into BigDecimal
                 inventory.put(lineArray[0], new Snack(lineArray[1], price, lineArray[3])); // create snack object, and add to Map with inventory number (5)
             }
-
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
-
     }
 
     public int getidNumber() {
@@ -121,7 +120,9 @@ public class VendingMachine {
     public boolean isValidDollarEntered(String userInput) {
         try {
             int dollar = Integer.parseInt(userInput);
-            return true;
+            if (dollar > 0) {
+                return true;
+            }
         } catch (Exception e) {
             System.out.println("You have not entered a valid whole number"); //
         }
