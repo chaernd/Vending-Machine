@@ -1,36 +1,9 @@
 package com.techelevator;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.*;
-import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.LinkedHashMap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-
-import static org.junit.Assert.assertNotNull;
 
 public class VendingMachineTest {
     private VendingMachine machine;
@@ -64,6 +37,9 @@ public class VendingMachineTest {
         assertEquals(assertTrue(Maps.difference(expected, result).areEqual()));
 }
 */
+
+    /********************************** Feed Money  ********************************************/
+
     @Test
     public void testGetMachineBalance() {
         machine.increaseMachineBalance("5");
@@ -98,7 +74,8 @@ public class VendingMachineTest {
         Assert.assertEquals(new BigDecimal("10"),result);
     }
 
-/*******************************************************************************/
+    /********************************** Subtract Machine Balance ********************************************/
+
 
     @Test
     public void testSubtractMachineBalanceIfNegative() {
@@ -126,10 +103,34 @@ public class VendingMachineTest {
     }
 
 
+    /********************************** Display Items ********************************************/
+
+    @Test
+    public void testDisplayItems() {
+        // check format
+        String result = machine.displayItems();
+        String expected = "A1 Potato Crisps 3.05 5\n"+
+                "A2 Stackers 1.45 5\n" +
+                "A3 Grain Waves 2.75 5\n" +
+                "A4 Cloud Popcorn 3.65 5\n" +
+                "B1 Moonpie 1.80 5\n" +
+                "B2 Cowtales 1.50 5\n" +
+                "B3 Wonka Bar 1.50 5\n" +
+                "B4 Crunchie 1.75 5\n" +
+                "C1 Cola 1.25 5\n" +
+                "C2 Dr. Salt 1.50 5\n" +
+                "C3 Mountain Melter 1.50 5\n" +
+                "C4 Heavy 1.50 5\n" +
+                "D1 U-Chews 0.85 5\n" +
+                "D2 Little League Chew 0.95 5\n" +
+                "D3 Chiclets 0.75 5\n" +
+                "D4 Triplemint 0.75 5\n";
+        Assert.assertEquals(expected,result);
+    }
 
 
-    /******************************************************************************/
-    //public Snack(String snackName, BigDecimal price, String description)
+    /********************************** Purchase Item Tests ********************************************/
+
     @Test
     public void testPurchaseItemSoldOut() {
         Snack testSnack = machine.getInventory().get("A1");
@@ -161,10 +162,9 @@ public class VendingMachineTest {
         Assert.assertEquals(expected, result);
     }
 
-/******************************************************************************/
 
+    /********************************** Valid Slot Entered ********************************************/
 
-/**************************************************************************/
     @Test
     public void testIsValidSlotLowestCorrectAnswer() {
     boolean result = machine.isValidSlot("A1");
@@ -183,7 +183,9 @@ public class VendingMachineTest {
         boolean result = machine.isValidSlot("A5");
         Assert.assertEquals(false, result);
     }
-/**************************************************************************/
+
+
+    /********************************** Dollar Amount Valid ********************************************/
 
 
     @Test
@@ -204,29 +206,7 @@ public class VendingMachineTest {
         Assert.assertEquals(false, result);
     }
 
-    @Test
-    public void testDisplayItems() {
-        // check format
-        String result = machine.displayItems();
-        String expected = "A1 Potato Crisps 3.05 5\n"+
-        "A2 Stackers 1.45 5\n" +
-        "A3 Grain Waves 2.75 5\n" +
-        "A4 Cloud Popcorn 3.65 5\n" +
-        "B1 Moonpie 1.80 5\n" +
-        "B2 Cowtales 1.50 5\n" +
-        "B3 Wonka Bar 1.50 5\n" +
-        "B4 Crunchie 1.75 5\n" +
-        "C1 Cola 1.25 5\n" +
-        "C2 Dr. Salt 1.50 5\n" +
-        "C3 Mountain Melter 1.50 5\n" +
-        "C4 Heavy 1.50 5\n" +
-        "D1 U-Chews 0.85 5\n" +
-        "D2 Little League Chew 0.95 5\n" +
-        "D3 Chiclets 0.75 5\n" +
-        "D4 Triplemint 0.75 5\n";
-        Assert.assertEquals(expected,result);
-    }
-
+    /********************************** Make Change ********************************************/
 
     @Test
     public void testMakeChangeWithFive() {

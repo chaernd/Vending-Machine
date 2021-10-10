@@ -1,24 +1,11 @@
 package com.techelevator;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import java.math.BigDecimal;
 
 public class SnackTest {
 
-    public void testGetSnackName() {
-    }
 
-    public void testGetPrice() {
-    }
-
-    public void testGetDescription() {
-    }
-
-    public void testGetInventory() {
-    }
-
-    public void testSetInventory() {
-    }
-
-    public void testPlaySound() {
-    }
 }
