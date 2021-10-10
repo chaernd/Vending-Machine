@@ -16,23 +16,19 @@ public class VendingMachine {
     /**
      * Instance variables
      **/
-    private int idNumber;
     private Map<String, Snack> inventory = new LinkedHashMap<>();
-    private int[] options;
     private BigDecimal machineBalance;
     private Scanner scanner = new Scanner(System.in);
     private final BigDecimal STARTING_BALANCE = new BigDecimal("0");
+
 
     /**
      * Constructor
      **/
 
-    public VendingMachine(int idNumber) {
-        this.idNumber = idNumber;
+    public VendingMachine() {
         this.machineBalance = STARTING_BALANCE;
-//        this.machineBalance = new BigDecimal("0");
         createInventoryMap();
-
     }
 
     public void createInventoryMap() {
@@ -50,25 +46,10 @@ public class VendingMachine {
         }
     }
 
-    public int getidNumber() {
-        return idNumber;
-    }
-
     public Map<String, Snack> getInventory() {
         return inventory;
     }
 
-    public void setIdNumber(int idNumber) {
-        this.idNumber = idNumber;
-    }
-
-    public void setInventory(Map<String, Snack> inventory) {
-        this.inventory = inventory;
-    }
-
-    public void setOptions(int[] options) {
-        this.options = options;
-    }
 
     public BigDecimal getMachineBalance() {
         return machineBalance;

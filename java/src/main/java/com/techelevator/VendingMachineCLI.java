@@ -29,7 +29,7 @@ public class VendingMachineCLI {
 
 	public void run() {
 
-		VendingMachine vendingMachine = new VendingMachine(1);
+		VendingMachine vendingMachine = new VendingMachine();
 		/** Displays main menu, prompts for selection **/
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);

@@ -5,43 +5,65 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.*;
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Map;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.LinkedHashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
+import static org.junit.Assert.assertNotNull;
 
 public class VendingMachineTest {
     private VendingMachine machine;
 
+
     @Before
     public void setup() {
-        machine = new VendingMachine(1);
+        machine = new VendingMachine();
     }
 
- /** Possibly create a second test file for the Run method in the CLI, to test method dependencies **/
+    /**
+     * Possibly create a second test file for the Run method in the CLI, to test method dependencies
+     **/
 
-    public void testCreateInventoryMap() {
-
-    }
-
-    public void testGetidNumber() {
-    }
-
+    /*
+    @Test
     public void testGetInventory() {
-    }
-
-    public void testSetIdNumber() {
-    }
-
-    public void testSetInventory() {
-    }
-
-    public void testSetOptions() {
-    }
+        File menuFile = new File("vendingmachine.csv");
+        Map<String, Snack> expected = new LinkedHashMap<>();
+        try (Scanner fileReader = new Scanner(menuFile)) {
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine(); // make a string
+                String[] lineArray = line.split("\\|"); // turn into array
+                BigDecimal price = (new BigDecimal(lineArray[2])).abs(); // turn priceString into BigDecimal
+                expected.put(lineArray[0], new Snack(lineArray[1], price, lineArray[3])); // create snack object, and add to Map with inventory number (5)
+            }
+        } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+    Map<String, Snack> result = machine.getInventory();
+        assertEquals(assertTrue(Maps.difference(expected, result).areEqual()));
+}
+*/
     @Test
     public void testGetMachineBalance() {
         machine.increaseMachineBalance("5");
@@ -204,24 +226,6 @@ public class VendingMachineTest {
         "D4 Triplemint 0.75 5\n";
         Assert.assertEquals(expected,result);
     }
-
-
-/*
-    @Test
-    public void testWriteToTransactionLedger() {
-        File readfile = new File("Log.txt");
-
-        try (Scanner scanner = new Scanner(readfile)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (line.equals()
-            }
-        } catch (Exception e) {
-            System.out.println("Wrong.!");
-        }
-
-    }
-*/
 
 
     @Test
