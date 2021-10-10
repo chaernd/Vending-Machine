@@ -36,7 +36,7 @@ public class VendingMachineCLI {
 
 			/** if the choice is 1, display all the vending machine purchase options **/
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-				vendingMachine.displayItems();
+				System.out.println(vendingMachine.displayItems());
 			/** if the choice is 2, bring the purchase submenu **/
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 
@@ -46,28 +46,20 @@ public class VendingMachineCLI {
 					if (purchaseChoice.equals(PURCHASE_MENU_FEED_MONEY)) { // Choice one, prompt for feed money
 						System.out.print("Enter money ");
 						String userInput = scanner.nextLine();
-						if (vendingMachine.isValidDollarEntered(userInput)) { // pass in user input to Vending Machine. If returns true (is valid dollar)
-							vendingMachine.increaseMachineBalance(userInput); // add money to balance and internally call method to write to audit log.
-							System.out.println("Current balance: " + vendingMachine.getMachineBalance());
-						}
+						System.out.println(vendingMachine.increaseMachineBalance(userInput));
 
 					} else if (purchaseChoice.equals(PURCHASE_MENU_SELECT_PRODUCT)) { // Choice two, prompt to pick an item
-						vendingMachine.displayItems();
+						System.out.println(vendingMachine.displayItems());
 						System.out.print("Enter a product number: ");
 						String userInput = scanner.nextLine();
-						if (vendingMachine.isValidSlot(userInput)) { // is it a key that exists in the map (and if machineBalance >= item price
-							System.out.print(vendingMachine.purchaseItem(userInput)); // if it does exist in the map, make the purchase.
-						} else {
-							System.out.println("That was not a valid selection");//print "invalid selection"
-						}
+						System.out.println(vendingMachine.purchaseItem(userInput));
 
 					} else if (purchaseChoice.equals(PURCHASE_MENU_FINISH_TRANSACTION)) { // Choice 3, complete the transaction
 
 						System.out.printf("Your change: %.2f", vendingMachine.getMachineBalance());
 						vendingMachine.makeChange(); // makes change (resets balance to 0, write to audit log)
-						System.out.printf("\nMachine Balance: %.2f", vendingMachine.getMachineBalance());
+						System.out.printf("\nMachine Balance: %.3f", vendingMachine.getMachineBalance());
 						break;
-
 					}
 				}
 			/** if the choice is 3, Exit **/

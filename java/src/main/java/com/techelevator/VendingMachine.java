@@ -74,11 +74,14 @@ public class VendingMachine {
         return machineBalance;
     }
 
-    public void increaseMachineBalance(String userInput) {
-        BigDecimal dollarEntered = new BigDecimal(userInput);
-        machineBalance = machineBalance.add(dollarEntered);
-        writeToTransactionLedger(dollarEntered, "FEED MONEY");
-
+    public String increaseMachineBalance(String userInput) {
+        if (isValidDollarEntered(userInput)){
+            BigDecimal dollarEntered = new BigDecimal(userInput);
+            machineBalance = machineBalance.add(dollarEntered);
+            writeToTransactionLedger(dollarEntered, "FEED MONEY");
+            return "Your Balance is: " + getMachineBalance();
+        }
+            return "That was not a valid whole number";
     }
 
     public void subtractMachineBalance(BigDecimal snackPrice) {
@@ -86,30 +89,35 @@ public class VendingMachine {
     }
 
 
-    public String purchaseItem(String slot) {
+    public String purchaseItem(String userInput) {
         //slot is a key in the map
         //we want to get the value at that key (which is a snack)
-        Snack selectedSnack = inventory.get(slot); // this is the snack Object they want to buy
-        if (selectedSnack.getInventory() > 0) { // if there is a snack to buy
-            if (machineBalance.compareTo(selectedSnack.getPrice()) >= 0) { // if machine balance is greater than or equal to snackPrice
-                BigDecimal snackPrice = selectedSnack.getPrice(); // turn snack price into a BigDecimal
-                subtractMachineBalance(snackPrice); // makes change
-                selectedSnack.setInventory(selectedSnack.getInventory() - 1); // should subtract one from the inventory.
-                writeToTransactionLedger(getMachineBalance().add(snackPrice), "PURCHASE");
-                return "Here's your snack, OK?" + " " +
-                        selectedSnack.getSnackName() +
-                        "\n" +
-                        "Snack Price: " + selectedSnack.getPrice() +
-                        "\n" +
-                        "Remaining Balance: " +getMachineBalance() +
-                        "\n" +
-                        selectedSnack.playSound();
 
-            } else {
-                return "You need to add more money";
+        if (isValidSlot(userInput)) {
+            Snack selectedSnack = inventory.get(userInput); // this is the snack Object they want to buy
+            if (selectedSnack.getInventory() > 0) { // if there is a snack to buy
+                if (machineBalance.compareTo(selectedSnack.getPrice()) >= 0) { // if machine balance is greater than or equal to snackPrice
+                    BigDecimal snackPrice = selectedSnack.getPrice(); // turn snack price into a BigDecimal
+                    subtractMachineBalance(snackPrice); // makes change
+                    selectedSnack.setInventory(selectedSnack.getInventory() - 1); // should subtract one from the inventory.
+                    writeToTransactionLedger(getMachineBalance().add(snackPrice), "PURCHASE");
+                    return "Here's your snack, OK?" + " " +
+                            selectedSnack.getSnackName() +
+                            "\n" +
+                            "Snack Price: " + selectedSnack.getPrice() +
+                            "\n" +
+                            "Remaining Balance: " + getMachineBalance() +
+                            "\n" +
+                            selectedSnack.playSound();
+
+                } else {
+                    return "You need to add more money";
+                }
             }
+            return "Sold Out";
+        } else {
+            return "That was not a valid selection";
         }
-        return "Sold Out";
     }
 
 
@@ -124,17 +132,19 @@ public class VendingMachine {
                 return true;
             }
         } catch (Exception e) {
-            System.out.println("You have not entered a valid whole number"); //
+//            System.out.println("You have not entered a valid whole number");
         }
         return false;
     }
 
-    public void displayItems() {
+    public String displayItems() {
+        String items = "";
         for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
             String key = item.getKey();
             Snack value = item.getValue();
-            System.out.println(key + " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory());
+            items += key + " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory() + "\n";
         }
+        return items;
     }
 
     public void writeToTransactionLedger(BigDecimal dollars, String transactionType) {

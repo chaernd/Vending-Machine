@@ -22,7 +22,7 @@ public class VendingMachineTest {
         machine = new VendingMachine(1);
     }
 
-
+ /** Possibly create a second test file for the Run method in the CLI, to test method dependencies **/
 
     public void testCreateInventoryMap() {
 
@@ -42,11 +42,38 @@ public class VendingMachineTest {
 
     public void testSetOptions() {
     }
-
+    @Test
     public void testGetMachineBalance() {
+        machine.increaseMachineBalance("5");
+        BigDecimal result = machine.getMachineBalance();
+        Assert.assertEquals(new BigDecimal("5"),result);
     }
 
-    public void testIncreaseMachineBalance() {
+    @Test
+    public void testIncreaseMachineBalanceWithTooManyDecimals() {
+        machine.increaseMachineBalance("5.5392057");
+        BigDecimal result = machine.getMachineBalance();
+        Assert.assertEquals(new BigDecimal("0"),result);
+    }
+    @Test
+    public void testIncreaseMachineBalanceWithNegativeNumber() {
+        machine.increaseMachineBalance("-1");
+        BigDecimal result = machine.getMachineBalance();
+        Assert.assertEquals(new BigDecimal("0"),result);
+    }
+
+    @Test
+    public void testIncreaseMachineBalanceWith0() {
+        machine.increaseMachineBalance("0");
+        BigDecimal result = machine.getMachineBalance();
+        Assert.assertEquals(new BigDecimal("0"),result);
+    }
+
+    @Test
+    public void testIncreaseMachineBalanceWithWholeNumber() {
+        machine.increaseMachineBalance("10");
+        BigDecimal result = machine.getMachineBalance();
+        Assert.assertEquals(new BigDecimal("10"),result);
     }
 
 /*******************************************************************************/
@@ -70,10 +97,10 @@ public class VendingMachineTest {
         result = machine.getMachineBalance();
         Assert.assertEquals(new BigDecimal("10"), result);
 
-        machine.increaseMachineBalance("523.50");
+        machine.increaseMachineBalance("523.50"); // this fails b/c invalid whole number
         machine.subtractMachineBalance(new BigDecimal("3.05"));
         result = machine.getMachineBalance();
-        Assert.assertEquals(new BigDecimal("530.45"), result);
+        Assert.assertEquals(new BigDecimal("6.95"), result);
     }
 
 
@@ -141,7 +168,6 @@ public class VendingMachineTest {
     public void testIsValidDollarEnteredWithWords() {
         boolean result = machine.isValidDollarEntered("Apples");
         Assert.assertEquals(false, result);
-
     }
 
     @Test
@@ -156,7 +182,27 @@ public class VendingMachineTest {
         Assert.assertEquals(false, result);
     }
 
+    @Test
     public void testDisplayItems() {
+        // check format
+        String result = machine.displayItems();
+        String expected = "A1 Potato Crisps 3.05 5\n"+
+        "A2 Stackers 1.45 5\n" +
+        "A3 Grain Waves 2.75 5\n" +
+        "A4 Cloud Popcorn 3.65 5\n" +
+        "B1 Moonpie 1.80 5\n" +
+        "B2 Cowtales 1.50 5\n" +
+        "B3 Wonka Bar 1.50 5\n" +
+        "B4 Crunchie 1.75 5\n" +
+        "C1 Cola 1.25 5\n" +
+        "C2 Dr. Salt 1.50 5\n" +
+        "C3 Mountain Melter 1.50 5\n" +
+        "C4 Heavy 1.50 5\n" +
+        "D1 U-Chews 0.85 5\n" +
+        "D2 Little League Chew 0.95 5\n" +
+        "D3 Chiclets 0.75 5\n" +
+        "D4 Triplemint 0.75 5\n";
+        Assert.assertEquals(expected,result);
     }
 
 
