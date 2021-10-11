@@ -42,16 +42,23 @@ public class Snack {
         String snackSound = " ";
         switch (snackType) {
             case "Chip":
-                snackSound = "All chip items print Crunch Crunch, Yum!";
+                snackSound = "Crunch Crunch, Yum!";
+                break;
 
             case "Candy":
                 snackSound = "Munch Munch, Yum!";
+                break;
 
             case "Drink":
                 snackSound = "Glug Glug, Yum!";
+                break;
 
             case "Gum":
                 snackSound = "Chew Chew, Yum!";
+                break;
+
+            default:
+                snackSound = "unknown";
         }
         return snackSound;
     }

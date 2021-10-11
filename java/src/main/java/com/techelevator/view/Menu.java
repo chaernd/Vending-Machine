@@ -55,6 +55,7 @@ public class Menu {
 			}
 			out.println(optionNum + ") " + options[i]);
 		}
+
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
 		out.flush();
 	}

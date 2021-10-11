@@ -33,7 +33,9 @@ public class VendingMachineCLI {
 
 				case MAIN_MENU_OPTION_PURCHASE:
 					while (true) {
+						System.out.println("\nYour balance: $" + (vendingMachine.getMachineBalance()).setScale(2));
 						String purchaseChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+
 						if (purchaseChoice.equals(PURCHASE_MENU_FEED_MONEY)) {
 							System.out.print("Enter money ");
 							String userInput = scanner.nextLine();
@@ -49,17 +51,20 @@ public class VendingMachineCLI {
 							System.out.printf("Your change: %.2f", vendingMachine.getMachineBalance());
 							vendingMachine.makeChange();
 							System.out.printf("\nMachine Balance: %.2f", vendingMachine.getMachineBalance());
+
 							break;
 						}
 					}
+
 					break;
+
 
 				case MAIN_MENU_OPTION_EXIT:
 					System.out.println("Goodbye!");
 					System.exit(0);
 
 				case MAIN_MENU_OPTION_SALES_REPORT:
-					vendingMachine.salesReport();
+					vendingMachine.makeSalesReportFile();
 					break;
 			}
 		}

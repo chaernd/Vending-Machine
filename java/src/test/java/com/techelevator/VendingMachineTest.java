@@ -151,7 +151,7 @@ public class VendingMachineTest {
         Snack selectedSnack = machine.getInventory().get("A1");
         machine.increaseMachineBalance("10");
         String result = machine.purchaseItem("A1");
-        String expected = "Here's your snack, OK?" + " " +
+        String expected = "Dispensing Snack: " +
                 selectedSnack.getSnackName() +
                 "\n" +
                 "Snack Price: " + selectedSnack.getPrice() +
@@ -160,6 +160,14 @@ public class VendingMachineTest {
                 "\n" +
                 selectedSnack.playSound();
         Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    public void testPurchaseItemWithInvalidSelection() {
+        machine.increaseMachineBalance("10");
+        String result = machine.purchaseItem("A5");
+        String expected = "That was not a valid selection";
+        Assert.assertEquals(expected,result);
     }
 
 
@@ -231,6 +239,14 @@ public class VendingMachineTest {
         machine.makeChange();
         BigDecimal result = machine.getMachineBalance();
         Assert.assertEquals(new BigDecimal("0"), result);
+    }
+
+    @Test
+    public void testGenerateSalesDataWithOnePurchaseOfA1() {
+        machine.increaseMachineBalance("10");
+        machine.purchaseItem("A1");
+        BigDecimal totalSales = machine.generateSalesData();
+        Assert.assertEquals(new BigDecimal("3.05"),totalSales);
     }
 
 }

@@ -13,6 +13,7 @@ public class VendingMachine {
     private BigDecimal machineBalance;
     private Scanner scanner = new Scanner(System.in);
     private final BigDecimal STARTING_BALANCE = new BigDecimal("0");
+    private String salesString;
 
 
     /******************* Constructor ***********************/
@@ -57,7 +58,11 @@ public class VendingMachine {
         for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
             String key = item.getKey();
             Snack value = item.getValue();
-            items += key + " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory() + "\n";
+            if (value.getInventory() == 0) {
+                items += key + " " + value.getSnackName() + " " + value.getPrice() + " " + "Sold Out" + "\n";
+            } else {
+                items += key + " " + value.getSnackName() + " " + value.getPrice() + " " + value.getInventory() + "\n";
+            }
         }
         return items;
     }
@@ -68,7 +73,7 @@ public class VendingMachine {
             BigDecimal dollarEntered = new BigDecimal(userInput);
             machineBalance = machineBalance.add(dollarEntered);
             writeToTransactionLedger(dollarEntered, "FEED MONEY");
-            return "Your Balance is: " + getMachineBalance();
+            return "";
         }
             return "That was not a valid whole number";
     }
@@ -154,25 +159,14 @@ public class VendingMachine {
     }
 
 
-    public void salesReport() {
-        BigDecimal totalSales = new BigDecimal("0");
+    public void makeSalesReportFile() {
+        BigDecimal totalSales = generateSalesData();
         Date reportDate = new Date();
         SimpleDateFormat reportDateFormatter = new SimpleDateFormat("dd.MM.yyyy hh.mm.ss aa");
         String reportName = reportDateFormatter.format(reportDate);
         try (FileWriter appender = new FileWriter("Sales Report" + reportName + ".txt")) {
             try (PrintWriter writer = new PrintWriter(appender)) {
-                String items = "";
-                for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
-                    String key = item.getKey();
-                    Snack value = item.getValue();
-                    BigDecimal bigInventory, itemsSold, totalPerItem;
-                    bigInventory = new BigDecimal(value.getInventory());
-                    itemsSold = new BigDecimal("5").subtract(bigInventory);
-                    totalPerItem = value.getPrice().multiply(itemsSold);
-                    totalSales = totalSales.add(totalPerItem);
-                    items += value.getSnackName() + "|" + (5 - value.getInventory()) + "\n";
-                }
-                writer.println(items + "\n" + "TOTAL SALES: $" + totalSales);
+                writer.println(salesString + "\n" + "TOTAL SALES: $" + totalSales);
 
             } catch (Exception e) {
                 System.out.print("Exception: " + e.getMessage());
@@ -181,5 +175,20 @@ public class VendingMachine {
         } catch (Exception e) {
             System.out.print("Exception: " + e.getMessage());
         }
+    }
+
+    public BigDecimal generateSalesData() {
+        BigDecimal totalSales = new BigDecimal("0");
+        for (Map.Entry<String, Snack> item : getInventory().entrySet()) {
+            String key = item.getKey();
+            Snack value = item.getValue();
+            BigDecimal bigInventory, itemsSold, totalPerItem;
+            bigInventory = new BigDecimal(value.getInventory());
+            itemsSold = new BigDecimal("5").subtract(bigInventory);
+            totalPerItem = value.getPrice().multiply(itemsSold);
+            totalSales = totalSales.add(totalPerItem);
+            salesString += value.getSnackName() + "|" + (5 - value.getInventory()) + "\n";
+        }
+        return totalSales;
     }
 }
