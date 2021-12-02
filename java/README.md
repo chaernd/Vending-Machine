@@ -1,6 +1,7 @@
-## Our first Capstone at Tech Elevator's Java Cohort. A pair-programming project co-developed with Charlotte Kies. 
+# Tech Elevator's first Capstone project, pair-programmed with my spectacular partner Charlotte Kies.
 
 
+____
 ## Module 1 Capstone - Vending Machine Software
 
 You've been asked to develop an application for the newest vending machine distributor,
